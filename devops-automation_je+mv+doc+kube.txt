@@ -1,0 +1,441 @@
+kubernates project
+
+Devops Project | Jenkins | Git | Maven | Docker | Kubernetes | CICD | deploy to k8s cluster #1
+Real-time End to End DevOps CI/CD Project
+DevOps Project | CI/CD through Jenkins | DevOps Projects for Beginners | AWS DevOps Project | DevOps Real-time Project-1 
+Kubernetes deployment plugin download::  shorturl.at/afu68
+#docker #kubernetes  #ansible #git #linux #jenkins  #dockerfile #k8 's #nexus 
+Prerequisites:
+1. Jenkins-Docker server
+2. k8s cluster (Master & Node)
+3. Maven Installed
+
+------------------------------------------------------------------------------------------------------------------------------------------------
+1. Application Overview
+2. Git use cases
+3. Jenkins Job Creation 
+4. Maven UNIT TEST
+5. Maven Integration TEST
+6. Maven Building jar/War files
+7. jenkins pipeline stage
+8. jenkins pipeline shell commands to docker build image
+9. jenkins push to docker hub
+10. jenkins plugins -- dashboard , docker , kubernetes , deploy to container , maven 
+11.  docker variable declaration -- docker hub password & username
+12. push to latest image in docker hub
+13. docker image deploy to k8s
+14. Error Debugging
+15. DockerFile 
+16. Docker Image Build
+17. Docker Image Push
+18. deploy to k8s
+
+==============================================================================================================================
+
+step 1- install jenkins
+step 2- install maven
+
+
+-------------------------------------
+maven install
+
+ wget https://mirrors.estointernet.in/apache/maven/maven-3/3.6.3/binaries/apache-maven-3.6.3-bin.tar.gz
+  tar -xvf apache-maven-3.6.3-bin.tar.gz
+  mv apache-maven-3.6.3 /opt
+   vim ~/.bash_profile
+--------------------------------
+M2_HOME='/opt/apache-maven-3.3.9'
+PATH="$M2_HOME/bin:$PATH"
+
+export PATH
+---------------------------------
+mvn -version
+apt install maven
+
+configure maven path in jenkins
+step3 - maven configarton- Manage Jenkins- Tools
+
+
+-------------------------------------------------------------
+plugin install 
+
+1) build pipeline
+
+Build Pipeline
+Pipeline timeline
+
+2) Dashboard
+
+Dashboard for Blue Ocean
+Dashboard View
+Environment Dashboard
+
+3)maven
+Maven Integration
+
+4)deploy
+Deploy to container
+Docker PipelineVersion
+
+5) docker
+docker
+
+6)Email Extension
+
+Email Extension Template
+
+
+Kubernetes
+
+========================================================================================
+docker login 
+username : natrajwadhai13
+Password: Narendra@123
+
+docker images
+docker ps -a
+
+
+===============================================================
+create projct 
+
+https://github.com/sureshrajuvetukuri/devops-automation/blob/main/Jenkinsfile
+
+pipline
+
+stage 1 Declarative: Tool Install
+stage 2 Build Maven
+stage 3 Build docker image
+
+save credential (checkout: checkout from version controller)
+
+/var/run/docker.sock: connect: permission denied
+
+stage 4  Push image to hub
+
+save credential ( withCredentials:bind credential variables)
+
+step 4 deployment k8s
+
+go to plugin - avance and import kubernetes-cd.hpi files
+
+after 
+save credential (kubernates deploy to kubernates
+save credential(kubernates configration (kubeconfig)
+
+ls -al
+cd .kube
+cat config
+
+copy configarion on pest to ...
+
+
+===========================================
+
+pipeline {
+    agent any
+    tools{
+        maven 'maven'
+    }
+    
+    stages{
+        stage('Build Maven'){
+            steps{
+                checkout([$class: 'GitSCM', branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/sureshrajuvetukuri/devops-automation.git']]])
+                sh 'mvn clean install'
+            }
+        }
+        stage('Build docker image'){
+            steps{
+                script{
+                    sh 'docker build -t suresh394/kubernetes .'
+                }
+            }
+        }
+        stage('Push image to hub'){
+            steps{
+                script{
+                    withCredentials([string(credentialsId: 'dockerhubpwd', variable: 'dockerhubpwd')]) {
+                    sh 'docker login -u suresh394 -p ${dockerhubpwd}'
+                        
+                    }
+                    sh 'docker push suresh394/kubernetes'
+                }
+            }
+        }
+        stage('Deploy to K8s'){
+            steps{
+                script{
+                    kubernetesDeploy (configs: 'deploymentservice.yaml',kubeconfigId: 'kubeconfig')
+                }
+            }
+        }
+    
+    }    
+}
+=====================================================================
+ checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/sureshrajuvetukuri/devops-automation.git']])
+ checkout([$class: 'GitSCM', branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/sureshrajuvetukuri/devops-automation.git']]])
+ 
+ 
+ 
+ add jenkins into docker group 
+ usermod -a -G docker jenkins
+ 
+ [root@localhost ~]# usermod -a -G docker jenkins
+[root@localhost ~]# systemctl restart jenkins
+[root@localhost ~]# systemctl restart docker
+[root@localhost ~]# systemctl status docker
+
+----------------------------------------------------------------------------------
+vi /etc/resolv.conf
+
+Adding a DNS nameserver to my /etc/resolv.conf solved this issue for me:
+
+cat /etc/resolv.conf
+# Cloudflare
+nameserver 1.1.1.1
+-----------------------------------------------------------------------------------------
+
+        stage('Push image to hub'){
+            steps{
+                script{
+                    withCredentials([string(credentialsId: '', variable: 'dockerhubpwd')]) {
+                    sh 'docker login -u natrajwadhai786 -p ${dockerhubpwd}'
+                        
+                    }
+                    sh 'docker push natrajwadhai786/kubernetes'
+                }
+            }
+        }
+		
+	
+        stage('Docker Push') {
+            steps {
+                script {
+                    // Login to Docker Hub
+                    docker.withRegistry('https://registry.hub.docker.com', 'Dockercs') {
+                        // Push the image to Docker Hub
+                        dockerImage.push()
+                    }
+                }
+            }
+        }	
+		
+		
+		dockerk8s
+		
+		dckr_pat_8aopYBIKxXYAYmu3um2HjqM2aRc
+		
+		dckr_pat_8aopYBIKxXYAYmu3um2HjqM2aRc
+		
+		docker login 
+username : natrajwadhai13
+Password: Narendra@123
+
+exec bash
+
+
+===========================================================
+
+Step 1: 
+
+On master & worker node 
+
+sudo su -
+apt-get update
+
+apt-get install docker.io -y
+yum  install docker.io -y
+
+systemctl restart docker
+service docker restart
+
+curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
+echo "deb http://apt.kubernetes.io/ kubernetes-xenial main" >/etc/apt/sources.list.d/kubernetes.list
+apt-get update
+apt install kubeadm=1.20.0-00 kubectl=1.20.0-00 kubelet=1.20.0-00 -y
+
+Step 2: 
+On Master
+kubeadm init --pod-network-cidr=192.168.0.0/16
+>copy the token and pest into the worker node.
+
+    --discovery-token-ca-cert-hash sha256:ab2b8569d6e7acea4008009b2e810beb92addb71433a9069e46b0e8aafcfba14
+
+
+Step 3
+
+ON Master
+exit
+mkdir -p $HOME/.kube
+sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+sudo chown $(id -u):$(id -g) $HOME/.kube/config
+
+sudo su -
+
+Step 4 
+
+ON master
+kubectl apply -f https://docs.projectcalico.org/manifests/calico.yaml
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v0.49.0/deploy/static/provider/baremetal/deploy.yaml
+
+
+------------
+node vm join kubernates custer
+
+kubeadm join 172.31.48.39:6443 --token bzhug1.w8vucduj0mom8ozp \
+    --discovery-token-ca-cert-hash sha256:ab2b8569d6e7acea4008009b2e810beb92addb71433a9069e46b0e8aafcfba14
+	
+kubeadm join 10.148.0.3:6443 --token 9dpav9.xcjknsjqcjk7qvvn \
+    --discovery-token-ca-cert-hash sha256:09fe7437a9fdd101a00e5f0e852cdf27b98177c8795b593e55ce59d2b894f11b
+	
+check master node
+kubectl get nodes
+root@master:~# kubectl get nodes
+NAME     STATUS   ROLES                  AGE     VERSION
+master   Ready    control-plane,master   2m48s   v1.20.0
+node     Ready    <none>                 66s     v1.20.0
+
+
+
+
+
+kubectl get deployment
+kubectl get svc
+http://34.143.215.73:30163/
+
+
+
+---------------------------------------------
+jenkins
+
+    1  clear
+    2  apt-get update
+    3  curl -fsSL https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key | sudo tee   /usr/share/keyrings/jenkins-keyring.asc > /dev/null
+    4  echo deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc]   https://pkg.jenkins.io/debian-stable binary/ | sudo tee   /etc/apt/sources.list.d/jenkins.list > /dev/null
+    5  sudo apt-get update
+    6  sudo apt-get install jenkins
+    7  systemctl status jenkins.service
+    8  apt install openjdk-8-jdk
+    9  apt install openjdk-11-jdk
+   10  java -version
+   11  apt-get update
+   12  systemctl enable jenkins.service
+   13  systemctl start jenkins.service
+   14  systemctl status jenkins.service
+   15  apt install git -y
+   16  git --version
+   17  pwd
+   18  ls
+   19  vi docker.sh
+   20  chmod 777 docker.sh
+   21  ./docker.sh
+   22  sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+   23  sudo docker run hello-world
+   24  systemctl status docker
+   25  docker -v
+   26  clear
+   27  wget https://mirrors.estointernet.in/apache/maven/maven-3/3.6.3/binaries/apache-maven-3.3.6-bin.tar.gz
+   28  ls
+   29  wget https://mirrors.estointernet.in/apache/maven/maven-3/3.6.3/binaries/apache-maven-3.6.3-bin.tar.gz
+   30  ls
+   31  tar -xvf apache-maven-3.6.3-bin.tar.gz
+   32  ls
+   33  mv apache-maven-3.6.3 /opt
+   34  vim ~/.bash_profile
+   35  mvn -version
+   36  vim ~/.bash_profile
+   37  mvn -version
+   38  apt install maven
+   39  mvn -version
+   40  clear
+   41  docker login
+   42  docker images
+   43  docker ps -a
+   44  apt-get update
+   45  chmod 777 /var/run/docker.sock
+   46  docker images
+   47  ls -al
+----------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+................................
+
+Set-ExecutionPolicy Unrestricted
+truffle compile
+truffle migrate
+truffle console
+truffle test
+
+
+
+
+System Requirements
+Supported Operating Systems
+Windows 10
+Mac OSX
+Linux
+VS Code 1.60.0 (or greater)
+Node 14.17.3 (or greater)
+NPM 7.18.1 (or greater)
+Git 2.10.x (or greater)
+
+
+Development
+We welcome pull requests. To get started, just fork this repo, clone it locally, and run:
+
+# Install
+npm install -g yarn
+yarn install
+
+# Test
+yarn test
+
+# Integration Test
+yarn test:int
+
